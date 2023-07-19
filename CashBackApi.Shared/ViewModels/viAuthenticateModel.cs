@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using AsbtCore.UtilsV2;
+using System.ComponentModel.DataAnnotations;
 
 namespace CashBackApi.Shared.ViewModels
 {
@@ -13,6 +14,14 @@ namespace CashBackApi.Shared.ViewModels
         public override string ToString()
         {
             return $"Пользователь{Login} пароль:{Password}";
+        }
+
+        public AnswereBasic Validate()
+        {
+            if (Login.IsNullorEmpty() || Password.IsNullorEmpty())
+                return new AnswereBasic(600, "Логин или пароль пустые");
+
+            return new AnswereBasic(0, "");
         }
     }
 }

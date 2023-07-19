@@ -35,7 +35,7 @@ namespace CashBackApi.Database.Migrations
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     full_name = table.Column<string>(type: "text", nullable: true),
-                    phone = table.Column<string>(type: "text", nullable: true),
+                    phone = table.Column<string>(type: "text", nullable: false),
                     login = table.Column<string>(type: "text", nullable: true),
                     password = table.Column<string>(type: "text", nullable: true),
                     user_type_id = table.Column<int>(type: "integer", nullable: false),
@@ -113,8 +113,8 @@ namespace CashBackApi.Database.Migrations
                 columns: new[] { "id", "create_date", "create_user", "name", "status", "update_date", "update_user" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2023, 7, 19, 9, 52, 39, 927, DateTimeKind.Local).AddTicks(8714), 1, "Admin", 1, null, null },
-                    { 2, new DateTime(2023, 7, 19, 9, 52, 39, 927, DateTimeKind.Local).AddTicks(8745), 1, "Client", 1, null, null }
+                    { 1, new DateTime(2023, 7, 19, 11, 6, 12, 559, DateTimeKind.Local).AddTicks(6094), 1, "Admin", 1, null, null },
+                    { 2, new DateTime(2023, 7, 19, 11, 6, 12, 559, DateTimeKind.Local).AddTicks(6128), 1, "Client", 1, null, null }
                 });
 
             migrationBuilder.CreateIndex(
@@ -126,6 +126,12 @@ namespace CashBackApi.Database.Migrations
                 name: "ix_tb_sms_verifications_user_id",
                 table: "tb_sms_verifications",
                 column: "user_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_tb_users_phone",
+                table: "tb_users",
+                column: "phone",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "ix_tb_users_user_type_id",

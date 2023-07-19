@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CashBackApi.Database.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20230719045240_db1")]
+    [Migration("20230719060612_db1")]
     partial class db1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -66,7 +66,7 @@ namespace CashBackApi.Database.Migrations
                         new
                         {
                             Id = 1,
-                            CreateDate = new DateTime(2023, 7, 19, 9, 52, 39, 927, DateTimeKind.Local).AddTicks(8714),
+                            CreateDate = new DateTime(2023, 7, 19, 11, 6, 12, 559, DateTimeKind.Local).AddTicks(6094),
                             CreateUser = 1,
                             Name = "Admin",
                             Status = 1
@@ -74,7 +74,7 @@ namespace CashBackApi.Database.Migrations
                         new
                         {
                             Id = 2,
-                            CreateDate = new DateTime(2023, 7, 19, 9, 52, 39, 927, DateTimeKind.Local).AddTicks(8745),
+                            CreateDate = new DateTime(2023, 7, 19, 11, 6, 12, 559, DateTimeKind.Local).AddTicks(6128),
                             CreateUser = 1,
                             Name = "Client",
                             Status = 1
@@ -211,6 +211,7 @@ namespace CashBackApi.Database.Migrations
                         .HasColumnName("password");
 
                     b.Property<string>("Phone")
+                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("phone");
 
@@ -232,6 +233,10 @@ namespace CashBackApi.Database.Migrations
 
                     b.HasKey("Id")
                         .HasName("pk_tb_users");
+
+                    b.HasIndex("Phone")
+                        .IsUnique()
+                        .HasDatabaseName("ix_tb_users_phone");
 
                     b.HasIndex("UserTypeId")
                         .HasDatabaseName("ix_tb_users_user_type_id");

@@ -12,6 +12,7 @@ namespace CashBackApi.Database
         #region DbSet
         public DbSet<spUserType> spUserTypes { get; set; }
         public DbSet<tbCashBack> tbCashBacks { get; set; }
+        public DbSet<tbCashBackBalance> tbCashBackBalances { get; set; }
         public DbSet<tbSmsVerification> tbSmsVerifications { get; set; }
         public DbSet<tbUser> tbUsers { get; set; }
         #endregion DbSet

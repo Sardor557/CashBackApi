@@ -3,6 +3,7 @@ using System;
 using CashBackApi.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CashBackApi.Database.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    partial class MyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230719091804_db2")]
+    partial class db2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -64,7 +66,7 @@ namespace CashBackApi.Database.Migrations
                         new
                         {
                             Id = 1,
-                            CreateDate = new DateTime(2023, 7, 19, 16, 44, 56, 288, DateTimeKind.Local).AddTicks(4660),
+                            CreateDate = new DateTime(2023, 7, 19, 14, 18, 4, 627, DateTimeKind.Local).AddTicks(4500),
                             CreateUser = 1,
                             Name = "Admin",
                             Status = 1
@@ -72,7 +74,7 @@ namespace CashBackApi.Database.Migrations
                         new
                         {
                             Id = 2,
-                            CreateDate = new DateTime(2023, 7, 19, 16, 44, 56, 288, DateTimeKind.Local).AddTicks(4690),
+                            CreateDate = new DateTime(2023, 7, 19, 14, 18, 4, 627, DateTimeKind.Local).AddTicks(4536),
                             CreateUser = 1,
                             Name = "Client",
                             Status = 1
@@ -100,6 +102,14 @@ namespace CashBackApi.Database.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("create_user");
 
+                    b.Property<long>("Income")
+                        .HasColumnType("bigint")
+                        .HasColumnName("income");
+
+                    b.Property<long>("OutCome")
+                        .HasColumnType("bigint")
+                        .HasColumnName("out_come");
+
                     b.Property<int>("Status")
                         .HasColumnType("integer")
                         .HasColumnName("status");
@@ -123,56 +133,6 @@ namespace CashBackApi.Database.Migrations
                         .HasDatabaseName("ix_tb_cash_backs_user_id");
 
                     b.ToTable("tb_cash_backs", (string)null);
-                });
-
-            modelBuilder.Entity("CashBackApi.Models.tbCashBackBalance", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CashBackId")
-                        .HasColumnType("integer")
-                        .HasColumnName("cash_back_id");
-
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("create_date");
-
-                    b.Property<int>("CreateUser")
-                        .HasColumnType("integer")
-                        .HasColumnName("create_user");
-
-                    b.Property<long>("Income")
-                        .HasColumnType("bigint")
-                        .HasColumnName("income");
-
-                    b.Property<long>("Outcome")
-                        .HasColumnType("bigint")
-                        .HasColumnName("outcome");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("integer")
-                        .HasColumnName("status");
-
-                    b.Property<DateTime?>("UpdateDate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("update_date");
-
-                    b.Property<int?>("UpdateUser")
-                        .HasColumnType("integer")
-                        .HasColumnName("update_user");
-
-                    b.HasKey("Id")
-                        .HasName("pk_tb_cash_back_balances");
-
-                    b.HasIndex("CashBackId")
-                        .HasDatabaseName("ix_tb_cash_back_balances_cash_back_id");
-
-                    b.ToTable("tb_cash_back_balances", (string)null);
                 });
 
             modelBuilder.Entity("CashBackApi.Models.tbSmsVerification", b =>
@@ -302,18 +262,6 @@ namespace CashBackApi.Database.Migrations
                         .HasConstraintName("fk_tb_cash_backs_tb_users_user_id");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("CashBackApi.Models.tbCashBackBalance", b =>
-                {
-                    b.HasOne("CashBackApi.Models.tbCashBack", "CashBack")
-                        .WithMany()
-                        .HasForeignKey("CashBackId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired()
-                        .HasConstraintName("fk_tb_cash_back_balances_tb_cash_backs_cash_back_id");
-
-                    b.Navigation("CashBack");
                 });
 
             modelBuilder.Entity("CashBackApi.Models.tbSmsVerification", b =>

@@ -10,6 +10,7 @@ namespace CashBackApi.Services
         public static void AddCashBackServices(this IServiceCollection services)
         {
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ICashBackService, CashBackService>();
         }
     }
 }
