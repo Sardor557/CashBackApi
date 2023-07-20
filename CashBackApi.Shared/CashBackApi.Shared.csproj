@@ -12,4 +12,8 @@
     <PackageReference Include="AsbtCore.UtilsV2" Version="2.0.71" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\CashBackApi.Models\CashBackApi.Models.csproj" />
+  </ItemGroup>
+
 </Project>

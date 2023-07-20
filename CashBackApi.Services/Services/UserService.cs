@@ -4,16 +4,12 @@ using CashBackApi.Models;
 using CashBackApi.Shared.Interfaces;
 using CashBackApi.Shared.ViewModels;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,17 +22,15 @@ namespace CashBackApi.Services.Services
         private readonly MyDbContext db;
         private readonly IHttpContextAccessorExtensions accessor;
         private readonly ILogger<UserService> logger;
-        private readonly HttpClient client;
+        private readonly ISmsService smsService;
 
-        public UserService(IConfiguration conf, MyDbContext db, IHttpContextAccessorExtensions accessor, ILogger<UserService> logger)
+        public UserService(IConfiguration conf, MyDbContext db, IHttpContextAccessorExtensions accessor, ILogger<UserService> logger, ISmsService smsService)
         {
             this.conf = conf;
             this.db = db;
             this.accessor = accessor;
             this.logger = logger;
-            client = new HttpClient();
-
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            this.smsService = smsService;
         }
 
         private viUser GetToken(tbUser res)
@@ -70,21 +64,10 @@ namespace CashBackApi.Services.Services
             return usr;
         }
 
-        internal static int GetRandomVerifiedCode()
+        private int GetRandomVerifiedCode()
         {
             var rnd = new Random();
             return rnd.Next(1000, 9999);
-        }
-
-        private async ValueTask<AnswereBasic> SendSmsAsync(viSms sms)
-        {            
-            var req = new HttpRequestMessage(HttpMethod.Post, conf["SMSUrl"]);
-            req.Content = new StringContent(sms.ToJson(), Encoding.UTF8, "application/json");
-            var res = await client.SendAsync(req);
-            if (res.IsSuccessStatusCode)
-                return new AnswereBasic(0, "");
-
-            return new AnswereBasic(600, $"Ошибка при отправке смс на номер: {sms.Phone}");
         }
 
         public async ValueTask<Answer<viUser>> AuthenticateAsync(viAuthenticateModel model, string ip)
@@ -107,7 +90,7 @@ namespace CashBackApi.Services.Services
                     return new Answer<viUser>(204, "Неправильный логин или пароль");
                 }
 
-                return new Answer<viUser>(0, "", "", GetToken(res));
+                return new Answer<viUser>(GetToken(res));
             }
             catch (Exception ex)
             {
@@ -128,34 +111,35 @@ namespace CashBackApi.Services.Services
             {
                 int code = GetRandomVerifiedCode();
                 var user = await db.tbUsers.AsNoTracking().FirstOrDefaultAsync(x => x.Phone == create.Phone);
-                if (user is null)
-                {
-                    user = new tbUser();
-                    user.Phone = create.Phone;
-                    user.FullName = create.FullName;
-                    user.CreateDate = DateTime.Now;
-                    user.CreateUser = userId;
-                    user.Status = 1;
+                if (user is not null)                
+                    return await OnUserExistAsync(code, user);
 
-                    await db.tbUsers.AddAsync(user);
-                    await db.SaveChangesAsync();
+                user = new tbUser();
+                user.Phone = create.Phone;
+                user.FullName = create.FullName;
+                user.CreateDate = DateTime.Now;
+                user.CreateUser = userId;
+                user.Status = 1;
 
-                    var verificate = new tbSmsVerification();
-                    verificate.Phone = create.Phone;
-                    verificate.Code = code;
-                    verificate.IsVerificated = false;
-                    verificate.CreateDate = DateTime.Now;
-                    verificate.CreateUser = userId;
-                    verificate.Status = 1;
+                await db.tbUsers.AddAsync(user);
+                await db.SaveChangesAsync();
 
-                    await db.tbSmsVerifications.AddAsync(verificate);
-                    await db.SaveChangesAsync();
-                    await tran.CommitAsync();
+                var verificate = new tbSmsVerification();
+                verificate.Phone = create.Phone;
+                verificate.Code = code;
+                verificate.IsVerificated = false;
+                verificate.CreateDate = DateTime.Now;
+                verificate.CreateUser = userId;
+                verificate.Status = 1;
 
-                    return new Answer<viUser>(0, $"Пользователь создан, отправлен СМС на номер: {user.Phone}");
-                }
+                await db.tbSmsVerifications.AddAsync(verificate);
+                await db.SaveChangesAsync();
+                await tran.CommitAsync();
 
-                return await OnUserExistAsync(tran, code, user);
+                var sms = await smsService.SendSmsAsync(new viSms { Code = code, Phone = create.Phone });
+
+                return new Answer<viUser>(sms.AnswerId, sms.AnswerMessage);
+
             }
             catch (Exception ex)
             {
@@ -165,23 +149,26 @@ namespace CashBackApi.Services.Services
             }
         }
 
-        private async ValueTask<Answer<viUser>> OnUserExistAsync(IDbContextTransaction tran, int code, tbUser user)
+        private async ValueTask<Answer<viUser>> OnUserExistAsync(int code, tbUser user)
         {
-            var verificated = await db.tbSmsVerifications.FirstOrDefaultAsync(x => x.UserId == user.Id);
-            if (verificated.IsVerificated)
-            {
-                await tran.RollbackAsync();
-                return new Answer<viUser>(204, "Такой пользователь существует");
-            }
+            var tran = db.Database.CurrentTransaction;
 
-            var sendSms = await SendSmsAsync(new viSms { Phone = user.Phone, Code = code });
+            var sendSms = await smsService.SendSmsAsync(new viSms { Phone = user.Phone, Code = code });
             if (sendSms.AnswerId != 0)
             {
                 await tran.RollbackAsync();
                 return new Answer<viUser>(204, sendSms.AnswerMessage);
             }
 
-            verificated.Code = code;
+            var verificate = new tbSmsVerification();
+            verificate.UserId = user.Id;
+            verificate.Code = code;
+            verificate.IsVerificated = false;
+            verificate.Status = 1;
+            verificate.CreateDate = DateTime.Now;
+            verificate.CreateUser = accessor.GetId();
+            await db.tbSmsVerifications.AddAsync(verificate);
+
             await db.SaveChangesAsync();
             await tran.CommitAsync();
 

@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using CashBackApi.Shared.ViewModels;
 using System.Threading.Tasks;
 
 namespace CashBackApi.Shared.Interfaces
 {
     public interface ISmsService
     {
+        ValueTask<AnswereBasic> SendSmsAsync(viSms sms);
+        ValueTask<AnswereBasic> ConfirmSmsAsync(viSms sms);
     }
 }

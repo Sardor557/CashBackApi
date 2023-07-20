@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using CashBackApi.Models;
+using CashBackApi.Shared.ViewModels;
 using System.Threading.Tasks;
 
 namespace CashBackApi.Shared.Interfaces
 {
     public interface IDicoService
     {
+        ValueTask<Answer<spUserType[]>> GetUserTypesAsync();
+        ValueTask<Answer<spStatus[]>> GetStatusesAsync();
     }
 }

@@ -10,6 +10,7 @@ namespace CashBackApi.Database
     public partial class MyDbContext : DbContext
     {
         #region DbSet
+        public DbSet<spStatus> spStatuses { get; set; }
         public DbSet<spUserType> spUserTypes { get; set; }
         public DbSet<tbCashBack> tbCashBacks { get; set; }
         public DbSet<tbCashBackBalance> tbCashBackBalances { get; set; }

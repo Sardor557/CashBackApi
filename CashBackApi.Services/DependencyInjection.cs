@@ -11,6 +11,8 @@ namespace CashBackApi.Services
         {
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ICashBackService, CashBackService>();
+            services.AddScoped<IDicoService, DicoService>();
+            services.AddScoped<ISmsService, SmsService>();
         }
     }
 }
