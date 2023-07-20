@@ -31,7 +31,10 @@ namespace CashBackApi.Services.Services
 
         public int GetId()
         {
-            return accessor.HttpContext.User.FindFirstValue(ClaimTypes.Sid).ToInt();
+            var id = accessor.HttpContext.User.FindFirstValue(ClaimTypes.Sid);
+            if (id is not null)
+                return id.ToInt();
+            return 1;
         }
 
         public int GetUserType()

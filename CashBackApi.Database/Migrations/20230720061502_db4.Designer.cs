@@ -3,6 +3,7 @@ using System;
 using CashBackApi.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CashBackApi.Database.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    partial class MyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230720061502_db4")]
+    partial class db4
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -64,7 +66,7 @@ namespace CashBackApi.Database.Migrations
                         new
                         {
                             Id = 1,
-                            CreateDate = new DateTime(2023, 7, 20, 11, 19, 32, 29, DateTimeKind.Local).AddTicks(1612),
+                            CreateDate = new DateTime(2023, 7, 20, 11, 15, 2, 462, DateTimeKind.Local).AddTicks(9950),
                             CreateUser = 1,
                             Name = "Admin",
                             Status = 1
@@ -72,7 +74,7 @@ namespace CashBackApi.Database.Migrations
                         new
                         {
                             Id = 2,
-                            CreateDate = new DateTime(2023, 7, 20, 11, 19, 32, 29, DateTimeKind.Local).AddTicks(1644),
+                            CreateDate = new DateTime(2023, 7, 20, 11, 15, 2, 462, DateTimeKind.Local).AddTicks(9982),
                             CreateUser = 1,
                             Name = "Client",
                             Status = 1

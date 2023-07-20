@@ -10,6 +10,6 @@ namespace CashBackApi.Models
         public virtual tbUser User { get; set; }
 
         [Required]
-        public long CashBack { get; set; }
+        public long TotalBalance { get; set; }
     }
 }
