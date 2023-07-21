@@ -5,7 +5,7 @@ namespace CashBackApi.Shared.Interfaces
 {
     public interface ISmsService
     {
-        ValueTask<AnswereBasic> SendSmsAsync(viSms sms);
-        ValueTask<AnswereBasic> ConfirmSmsAsync(viSms sms);
+        ValueTask<AnswerBasic> SendSmsAsync(viSms sms);
+        ValueTask<AnswerBasic> ConfirmSmsAsync(viSms sms);
     }
 }

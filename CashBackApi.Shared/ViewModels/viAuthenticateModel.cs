@@ -16,12 +16,12 @@ namespace CashBackApi.Shared.ViewModels
             return $"Пользователь{Login} пароль:{Password}";
         }
 
-        public AnswereBasic Validate()
+        public AnswerBasic Validate()
         {
             if (Login.IsNullorEmpty() || Password.IsNullorEmpty())
-                return new AnswereBasic(600, "Логин или пароль пустые");
+                return new AnswerBasic(600, "Логин или пароль пустые");
 
-            return new AnswereBasic(0, "");
+            return new AnswerBasic(0, "");
         }
     }
 }

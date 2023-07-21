@@ -11,7 +11,7 @@ namespace CashBackApi.Controllers
     [Authorize]
     [ApiController]
     [ApiVersion("1.0")]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [SwaggerTag("Дико")]
 
     public class DicoController

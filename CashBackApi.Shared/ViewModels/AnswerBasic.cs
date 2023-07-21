@@ -1,6 +1,6 @@
 ﻿namespace CashBackApi.Shared.ViewModels
 {
-    public class AnswereBasic
+    public class AnswerBasic
     {
         public long AnswerId { get; set; }
 
@@ -8,20 +8,20 @@
 
         public string AnswerComment { get; set; }
 
-        public AnswereBasic()
+        public AnswerBasic()
         {
             AnswerId = 1L;
             AnswerMessage = "default";
             AnswerComment = "";
         }
 
-        public AnswereBasic(long inAnswereId, string inAnswereMessage)
+        public AnswerBasic(long inAnswereId, string inAnswereMessage)
         {
             AnswerId = inAnswereId;
             AnswerMessage = AnswerComment = inAnswereMessage;
         }
 
-        public AnswereBasic(long inAnswereId, string inAnswereMessage, string inAnswereComment)
+        public AnswerBasic(long inAnswereId, string inAnswereMessage, string inAnswereComment)
         {
             AnswerId = inAnswereId;
             AnswerMessage = inAnswereMessage;

@@ -80,9 +80,9 @@ namespace CashBackApi.Services.Services
             {
                 var hash = CHash.EncryptMD5(model.Password);
                 var res = await db.tbUsers
-                                  .AsNoTracking()
-                                  .Where(x => x.Login == model.Login && x.Password == hash)
-                                  .FirstOrDefaultAsync();
+                                .AsNoTracking()
+                                .Where(x => x.Login == model.Login && x.Password == hash)
+                                .FirstOrDefaultAsync();
 
                 if (res == null)
                 {
@@ -90,7 +90,7 @@ namespace CashBackApi.Services.Services
                     return new Answer<viUser>(204, "Неправильный логин или пароль");
                 }
 
-                return new Answer<viUser>(GetToken(res));
+                return new Answer<viUser>(0, "", "", GetToken(res));
             }
             catch (Exception ex)
             {
@@ -99,12 +99,12 @@ namespace CashBackApi.Services.Services
             }
         }
 
-        public async ValueTask<Answer<viUser>> CreateUserAsync(viUserCreate create)
+        public async ValueTask<AnswerBasic> CreateUserAsync(viUserCreate create)
         {
             int userId = accessor.GetId();
             var validate = create.Validate();
             if (validate.AnswerId != 0)
-                return new Answer<viUser>(validate.AnswerId, validate.AnswerMessage);
+                return validate;
 
             var tran = await db.Database.BeginTransactionAsync();
             try
@@ -138,18 +138,18 @@ namespace CashBackApi.Services.Services
 
                 var sms = await smsService.SendSmsAsync(new viSms { Code = code, Phone = create.Phone });
 
-                return new Answer<viUser>(sms.AnswerId, sms.AnswerMessage);
+                return new AnswerBasic(sms.AnswerId, sms.AnswerMessage);
 
             }
             catch (Exception ex)
             {
                 await tran.RollbackAsync();
                 logger.LogError($"UserService.CreateUserAsync error: {ex.GetAllMessages()}");
-                return new Answer<viUser>(204, "Системная ошибка");
+                return new AnswerBasic(204, "Системная ошибка");
             }
         }
 
-        private async ValueTask<Answer<viUser>> OnUserExistAsync(int code, tbUser user)
+        private async ValueTask<AnswerBasic> OnUserExistAsync(int code, tbUser user)
         {
             var tran = db.Database.CurrentTransaction;
 
@@ -157,12 +157,13 @@ namespace CashBackApi.Services.Services
             if (sendSms.AnswerId != 0)
             {
                 await tran.RollbackAsync();
-                return new Answer<viUser>(204, sendSms.AnswerMessage);
+                return new AnswerBasic(204, sendSms.AnswerMessage);
             }
 
             var verificate = new tbSmsVerification();
             verificate.UserId = user.Id;
             verificate.Code = code;
+            verificate.Phone = user.Phone;
             verificate.IsVerificated = false;
             verificate.Status = 1;
             verificate.CreateDate = DateTime.Now;
@@ -172,7 +173,7 @@ namespace CashBackApi.Services.Services
             await db.SaveChangesAsync();
             await tran.CommitAsync();
 
-            return new Answer<viUser>(0, "Такой пользователь существует, но не верефицирован, отправлен СМС с кодом подтверждения");
+            return new AnswerBasic(0, "Такой пользователь существует, но не верефицирован, отправлен СМС с кодом подтверждения");
         }
     }
 }

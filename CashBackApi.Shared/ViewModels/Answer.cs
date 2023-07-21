@@ -2,7 +2,7 @@
 
 namespace CashBackApi.Shared.ViewModels
 {
-    public sealed class Answer<T> : AnswereBasic
+    public sealed class Answer<T> : AnswerBasic
     {
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public T Data { get; set; }

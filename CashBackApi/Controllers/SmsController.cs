@@ -10,7 +10,7 @@ namespace CashBackApi.Controllers
     [Authorize]
     [ApiController]
     [ApiVersion("1.0")]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [SwaggerTag("SMS")]
 
     public class SmsController
@@ -20,9 +20,9 @@ namespace CashBackApi.Controllers
         public SmsController(ISmsService service) => this.service = service;
 
         [HttpPost("send")]
-        public ValueTask<AnswereBasic> SendSmsAsync(viSms sms) => service.SendSmsAsync(sms);
+        public ValueTask<AnswerBasic> SendSmsAsync(viSms sms) => service.SendSmsAsync(sms);
 
         [HttpPost("confirm")]
-        public ValueTask<AnswereBasic> ConfirmSmsAsync(viSms sms) => service.ConfirmSmsAsync(sms);
+        public ValueTask<AnswerBasic> ConfirmSmsAsync(viSms sms) => service.ConfirmSmsAsync(sms);
     }
 }

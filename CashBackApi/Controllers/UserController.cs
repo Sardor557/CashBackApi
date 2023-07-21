@@ -10,7 +10,7 @@ namespace CashBackApi.Controllers
     [Authorize]
     [ApiController]
     [ApiVersion("1.0")]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [SwaggerTag("Пользователи")]
 
     public class UserController : ControllerBase
@@ -28,6 +28,6 @@ namespace CashBackApi.Controllers
         }
 
         [HttpPost("create")]
-        public ValueTask<Answer<viUser>> CreateUserAsync([FromBody] viUserCreate create) => service.CreateUserAsync(create);
+        public ValueTask<AnswerBasic> CreateUserAsync([FromBody] viUserCreate create) => service.CreateUserAsync(create);
     }
 }

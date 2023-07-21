@@ -6,6 +6,6 @@ namespace CashBackApi.Shared.Interfaces
     public interface IUserService
     {
         ValueTask<Answer<viUser>> AuthenticateAsync(viAuthenticateModel model, string ip);
-        ValueTask<Answer<viUser>> CreateUserAsync(viUserCreate create);
+        ValueTask<AnswerBasic> CreateUserAsync(viUserCreate create);
     }
 }

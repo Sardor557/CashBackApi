@@ -10,7 +10,7 @@ namespace CashBackApi.Controllers
     [Authorize]
     [ApiController]
     [ApiVersion("1.0")]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [SwaggerTag("Кешбек")]
     public class CashBackController
     {
@@ -19,6 +19,6 @@ namespace CashBackApi.Controllers
         public CashBackController(ICashBackService service) => this.service = service;
 
         [HttpPost("change")]
-        public ValueTask<AnswereBasic> ChangeCashbackAsync(viCashback cashback) => service.ChangeCashbackAsync(cashback);
+        public ValueTask<AnswerBasic> ChangeCashbackAsync(viCashback cashback) => service.ChangeCashbackAsync(cashback);
     }
 }

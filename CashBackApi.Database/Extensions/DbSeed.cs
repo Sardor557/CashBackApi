@@ -12,9 +12,8 @@ namespace CashBackApi.Database.Extensions
             #region spUserTypes
             modelBuilder.Entity<spUserType>().HasData(new spUserType() { Id = 1, Name = "Admin", Status = 1, CreateUser = 1, CreateDate = DateTime.Now });
             modelBuilder.Entity<spUserType>().HasData(new spUserType() { Id = 2, Name = "LClient", Status = 1, CreateUser = 1, CreateDate = DateTime.Now });
-            modelBuilder.Entity<spUserType>().HasData(new spUserType() { Id = 2, Name = "TClient", Status = 1, CreateUser = 1, CreateDate = DateTime.Now });
+            modelBuilder.Entity<spUserType>().HasData(new spUserType() { Id = 3, Name = "TClient", Status = 1, CreateUser = 1, CreateDate = DateTime.Now });
             #endregion
-
         }
     }
 }

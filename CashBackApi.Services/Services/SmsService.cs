@@ -33,7 +33,7 @@ namespace CashBackApi.Services.Services
             this.cashBackService = cashBackService;
         }
 
-        public async ValueTask<AnswereBasic> SendSmsAsync(viSms sms)
+        public async ValueTask<AnswerBasic> SendSmsAsync(viSms sms)
         {
             try
             {
@@ -41,18 +41,18 @@ namespace CashBackApi.Services.Services
                 req.Content = new StringContent(sms.ToJson(), Encoding.UTF8, "application/json");
                 var res = await client.SendAsync(req);
                 if (res.IsSuccessStatusCode)
-                    return new AnswereBasic(0, $"Отправлен СМС на номер: {sms.Phone}");
+                    return new AnswerBasic(0, $"Отправлен СМС на номер: {sms.Phone}");
 
-                return new AnswereBasic(204, $"Ошибка при отправке смс на номер: {sms.Phone}");
+                return new AnswerBasic(204, $"Ошибка при отправке смс на номер: {sms.Phone}");
             }
             catch (Exception ex)
             {
                 logger.LogError($"SmsService.SendSmsAsync error: {ex.GetAllMessages()}");
-                return new AnswereBasic(600, "Ошибка системы");
+                return new AnswerBasic(600, "Ошибка системы");
             }
         }
 
-        public async ValueTask<AnswereBasic> ConfirmSmsAsync(viSms sms)
+        public async ValueTask<AnswerBasic> ConfirmSmsAsync(viSms sms)
         {
             var tran = await db.Database.BeginTransactionAsync();
             try
@@ -62,7 +62,7 @@ namespace CashBackApi.Services.Services
                 if (ver is null)
                 {
                     await tran.RollbackAsync();
-                    return new AnswereBasic(204, "Введен неправильный код подтверждения");
+                    return new AnswerBasic(204, "Введен неправильный код подтверждения");
                 }
 
                 ver.IsVerificated = true;
@@ -70,13 +70,13 @@ namespace CashBackApi.Services.Services
                 await cashBackService.CreateCashbackAsync(ver.UserId);    
                 await db.SaveChangesAsync();
 
-                return new AnswereBasic(0, "");
+                return new AnswerBasic(0, "");
             }
             catch (Exception ex)
             {
                 await tran.RollbackAsync();
                 logger.LogError($"SmsService.ConfirmSmsAsync error: {ex.GetAllMessages()}");
-                return new AnswereBasic(600, "Ошибка системы");
+                return new AnswerBasic(600, "Ошибка системы");
             }
         }
     }

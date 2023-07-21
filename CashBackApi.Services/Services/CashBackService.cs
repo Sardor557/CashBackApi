@@ -23,11 +23,11 @@ namespace CashBackApi.Services.Services
             this.accessor = accessor;
         }
 
-        public async ValueTask<AnswereBasic> ChangeCashbackAsync(viCashback cashback)
+        public async ValueTask<AnswerBasic> ChangeCashbackAsync(viCashback cashback)
         {
             var validate = cashback.Validate();
             if (validate.AnswerId != 0)
-                return new AnswereBasic(validate.AnswerId, validate.AnswerMessage);
+                return new AnswerBasic(validate.AnswerId, validate.AnswerMessage);
 
             var tran = await db.Database.BeginTransactionAsync();
             try
@@ -51,13 +51,13 @@ namespace CashBackApi.Services.Services
                 await db.SaveChangesAsync();
                 await tran.CommitAsync();
 
-                return new AnswereBasic(0, "");
+                return new AnswerBasic(0, "");
             }
             catch (Exception ex)
             {
                 await tran.RollbackAsync();
                 logger.LogError($"CashBackService.IncreaseCashbackAsync error: {ex.GetAllMessages()}");
-                return new AnswereBasic(600, "Ошибка системы");
+                return new AnswerBasic(600, "Ошибка системы");
             }
         }
 

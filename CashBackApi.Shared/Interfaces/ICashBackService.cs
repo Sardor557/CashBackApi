@@ -5,7 +5,7 @@ namespace CashBackApi.Shared.Interfaces
 {
     public interface ICashBackService
     {
-        ValueTask<AnswereBasic> ChangeCashbackAsync(viCashback cashback);
+        ValueTask<AnswerBasic> ChangeCashbackAsync(viCashback cashback);
         Task CreateCashbackAsync(int userId);
     }
 }

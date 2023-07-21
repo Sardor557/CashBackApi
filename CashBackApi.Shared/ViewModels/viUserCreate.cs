@@ -9,11 +9,11 @@ namespace CashBackApi.Shared.ViewModels
         public string Phone { get; set; }
         public string FullName { get; set; }
 
-        public AnswereBasic Validate()
+        public AnswerBasic Validate()
         {
-            if (Phone.IsNotEmpty()) return new AnswereBasic(600, "Номер телефона пустой");
+            if (Phone.IsNotEmpty()) return new AnswerBasic(600, "Номер телефона пустой");
 
-            return new AnswereBasic(0, "");
+            return new AnswerBasic(0, "");
         }
     }
 }
